@@ -54,7 +54,7 @@
 <body>
 
 <div id="video-container">
-    <video id="video" autoplay muted playsinline></video>
+    <video id="video" autoplay playsinline></video>
 </div>
 
 <div id="scroll-space"></div>
@@ -72,17 +72,23 @@
             hls.loadSource(videoSrc);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
+                video.muted = false; // Dezactivează modul silențios
+                video.play().catch(error => {
+                    console.error("Redarea cu sunet nu a fost permisă:", error);
+                });
             });
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = videoSrc;
             video.addEventListener('loadedmetadata', function() {
-                video.play();
+                video.muted = false; // Dezactivează modul silențios
+                video.play().catch(error => {
+                    console.error("Redarea cu sunet nu a fost permisă:", error);
+                });
             });
         }
 
         video.addEventListener('click', function() {
-            video.muted = !video.muted;
+            video.muted = !video.muted; // Comută între sunet și silențios la clic
         });
 
         // Adaugă dinamic mai multe spații de derulare la scroll
